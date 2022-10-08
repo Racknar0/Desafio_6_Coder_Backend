@@ -26,7 +26,6 @@ socket.on('datos', (data) => {
                     <th scope="col">Nombre</th>
                     <th scope="col">Precio</th>
                     <th scope="col">Miniatura</th>
-                    <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody id="tbody_productos">
@@ -34,22 +33,17 @@ socket.on('datos', (data) => {
         </table>
         `;
 
-        const tbody_productos = document.getElementById('tbody_productos');
+        fetch('/template/plantilla.ejs')
+            .then((res) => res.text())
+            .then((res) => {
+                console.log('res Fetch----', res);
 
-        data.productos.forEach((producto) => {
-            tbody_productos.innerHTML += `
-            <tr>
-                <th scope="row">${producto.id}</th>
-                <td>${producto.title}</td>
-                <td>${producto.price}</td>
-                <td><img src="${producto.thumbnail}" alt="miniatura" width="50px"></td>
-                <td>
-                    <button type="button" class="btn btn-danger" onclick="borrarProducto(${producto.id})">Borrar</button>
-                </td>
-            </tr>
-            `;
-        });
-
+                const template = ejs.compile(res);
+                const html = template(data);
+                console.log(html);
+                const tbody_productos = document.getElementById('tbody_productos');
+                tbody_productos.innerHTML = html;
+            });
 
 });
 
@@ -104,7 +98,16 @@ socket.on('messages', (data) => {
             <p style="color: green; font-style: italic;">${msj.msj}</p>
         </div>
         `;
-
-    
-        
 })});
+
+
+
+
+
+/* const datos = { nombre: 'Coder House', curso: 'Web Sockets' };
+const textoEjs = `<h1>Nombre curso: <%= nombre %></h1> <h2>Nombre curso: <%= curso %></h2>`;
+const template = ejs.compile(textoEjs);
+const html = template(datos);
+console.log(html);
+const template_div = document.getElementById('template_div');
+template_div.innerHTML = html; */
